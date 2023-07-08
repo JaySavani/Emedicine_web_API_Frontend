@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { setAleart } from "../store/actions/alert";
-import { ToastContainer } from "react-toastify";
 import { IoTrashSharp, IoAddCircleOutline } from "react-icons/io5";
 import { BsPencilSquare } from "react-icons/bs";
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
@@ -17,6 +17,8 @@ const Users = () => {
   const [add, setAdd] = useState(true);
   const [uid, setUid] = useState(-1);
   const [showd, setShowd] = useState(false);
+  const navigate = useNavigate();
+
 
   const dhandleClose = () => {
     setShowd(false);
@@ -62,7 +64,8 @@ const Users = () => {
   };
 
   useEffect(() => {
-    getUsers();
+    (localStorage.getItem('user') != "admin") ? navigate("/login") :
+      getUsers();
   }, []);
 
   // get all user
@@ -81,6 +84,7 @@ const Users = () => {
   // Post user
   const adduser = async () => {
     try {
+      const token = localStorage.getItem('token');
       const res = await axios({
         method: "POST",
         data: {
@@ -90,10 +94,15 @@ const Users = () => {
           password: password,
           type: "user",
         },
-        url: "https://localhost:44322/api/Users",
+        url: "https://localhost:44322/api/Auth/register",
+        headers: {
+          'Authorization': `Bearer ${token}` // Include the JWT token in the authorization header
+        }
       });
-      setAleart("User Save Successfully", "success");
-      getUsers();
+      if (res) {
+        setAleart("User Save Successfully", "success");
+        getUsers();
+      }
     } catch (error) {
       setAleart(error.message, "error");
     }
@@ -124,6 +133,8 @@ const Users = () => {
   // Put User with id
   async function usereditsubmit(id) {
     try {
+      // const token = localStorage.getItem('token');
+
       const res = await axios({
         method: "PUT",
         data: {
@@ -135,6 +146,9 @@ const Users = () => {
           type: "user",
         },
         url: "https://localhost:44322/api/Users/" + id,
+        // headers: {
+        //   'Authorization': `Bearer ${token}` // Include the JWT token in the authorization header
+        // }
       });
       getUsers();
       setAleart("User Updated Successfully", "success");
@@ -162,8 +176,8 @@ const Users = () => {
 
   return (
     <>
-      <ToastContainer />
-      <h2 className="text-center pt-5 pb-3">CRUD Opration on Users</h2>
+      {/* <h2 className="text-center pt-5 pb-3">CRUD Opration on Users</h2> */}
+      <h2 className="text-center pt-5 pb-3">Users</h2>
       <div
         className="d-flex align-items-center justify-content-center"
       >
@@ -329,7 +343,7 @@ const Users = () => {
           <Button variant="secondary" onClick={dhandleClose}>
             Cancel
           </Button>
-          <Button type="submit" variant="danger" onClick={() => {
+          <Button type="button" variant="danger" onClick={() => {
             dhandleClose();
             userdelete(uid);
 

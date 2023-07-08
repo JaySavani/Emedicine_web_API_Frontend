@@ -1,0 +1,11 @@
+.login-bg-home {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    overflow-y: scroll;
+    background-image: url("../assets/images/7852709_1936.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }

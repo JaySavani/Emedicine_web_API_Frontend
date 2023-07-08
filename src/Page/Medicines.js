@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { setAleart } from "../store/actions/alert";
-import { ToastContainer } from "react-toastify";
 import { IoTrashSharp, IoAddCircleOutline } from "react-icons/io5";
 import { TbCurrencyRupee } from "react-icons/tb";
 import { BsPencilSquare } from "react-icons/bs";
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 import Moment from 'moment';
+import { useNavigate } from "react-router-dom";
+
 
 import axios from "axios";
 
@@ -22,6 +23,8 @@ const Medicines = () => {
     const [imagename, setImagename] = useState("");
     const [imagesrc, setImagesrc] = useState("");
     const [imagefile, setImageFile] = useState(null);
+    const navigate = useNavigate();
+
 
 
     const [validated, setValidated] = useState(false);
@@ -128,7 +131,8 @@ const Medicines = () => {
     };
 
     useEffect(() => {
-        getMedicines();
+        (localStorage.getItem('user') != "admin") ? navigate("/login") :
+            getMedicines();
     }, []);
 
 
@@ -224,9 +228,9 @@ const Medicines = () => {
 
     return (
         <>
-            <ToastContainer />
             <div>
-                <h2 className="text-center pt-5 pb-3">CRUD Opration on Medicines</h2>
+                {/* <h2 className="text-center pt-5 pb-3">CRUD Opration on Medicines</h2> */}
+                <h2 className="text-center pt-5 pb-3">Medicines</h2>
             </div>
             <div
                 className="d-flex align-items-center justify-content-center"
